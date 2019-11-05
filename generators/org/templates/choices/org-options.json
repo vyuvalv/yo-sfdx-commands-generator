@@ -1,0 +1,85 @@
+{
+    "orgEdition" :[
+        {
+            "name": "Developer",
+            "value": "Developer"
+        }, 
+        {
+            "name": "Enterprise",
+            "value": "Enterprise"
+        }, 
+        {
+            "name": "Group",
+            "value": "Group"
+        }, 
+        {
+            "name": "Professional",
+            "value": "Professional"
+        }
+    ],
+   "orgFeatures" : [
+    {
+        "name": "Communities",
+        "value": "Communities",
+        "checked": true
+    }, 
+    {
+        "name": "PersonAccounts",
+        "value": "PersonAccounts",
+        "checked": true
+    }, 
+    {
+        "name": "AuthorApex",
+        "value": "AuthorApex",
+        "checked": false
+    }, 
+    {
+        "name": "MultiCurrency",
+        "value": "MultiCurrency",
+        "checked": false
+    }, 
+    {
+        "name": "ServiceCloud",
+        "value": "ServiceCloud",
+        "checked": false
+    },
+    {
+        "name": "ContactsToMultipleAccounts",
+        "value": "Contacts To Multiple Accounts",
+        "checked": false
+    }
+  ],
+  "orgLocal" :[
+    {
+        "name": "United States",
+        "value": "US"
+    },
+    {
+        "name": "Israel",
+        "value": "IL"
+    },
+    {
+        "name": "France",
+        "value": "FR"
+    },
+    {
+        "name": "Australia",
+        "value": "AU"
+    }
+
+  ],
+  "orgLanguage" : [
+    {
+        "name": "English",
+        "value": "en_US"
+    },
+    {
+        "name": "Hebrew",
+        "value": "iw"
+    },
+    {
+        "name": "French",
+        "value": "fr"
+    }
+  ]
+}

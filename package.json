@@ -1,0 +1,24 @@
+{
+  "name": "generator-dx",
+  "version": "0.0.1",
+  "description": "Example SFDX Workflow Generator",
+  "author": {
+    "name": "Yuval Vardi"
+  },
+  "license": "MIT",
+  "files": [
+    "generators/app"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "main": "generators/app/index.js",
+  "dependencies": {
+    "yeoman-generator": "^1.1.1",
+    "shelljs": "^0.7.8",
+    "chalk": "^2.3.0",
+    "ora": "^4.0.2",
+    "yosay": "^2.0.1"
+  },
+  "repository": "https://github.com"
+}

@@ -1,0 +1,16 @@
+{
+  "country": "<%= orgLocal %>",
+  "language": "<%= orgLanguage %>",
+  "orgName": "<%= orgName %>",
+  "edition": "<%= orgEdition %>",
+  "adminEmail": "<%= adminEmail %>",
+  "hasSampleData": <%= hasSampleData %>,
+  "features": ["<%- orgFeatures %>"],
+  "settings": {
+    "lightningExperienceSettings": {
+        "enableS1DesktopEnabled": true
+    }
+  },
+  "description":  "<%= orgDescription %>"
+}
+
