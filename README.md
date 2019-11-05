@@ -20,7 +20,7 @@ Few simple steps, install [Yeoman](http://yeoman.io) (we assume you have pre-ins
 
 1. Install SFDX
 ```npm
-   npm install sfdx-cli --global`
+   npm install sfdx-cli --global
 ```
 2. Install Yo
 ```npm
