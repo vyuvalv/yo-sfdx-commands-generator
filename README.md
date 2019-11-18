@@ -52,7 +52,7 @@ Then call your new workflow generator with:
 ***************************************
 ## Workflow Overview
 
-* In case your Devhub is not connect will show alert and you will bneed to connect DevHub
+* In case your Devhub is not connect will show alert and you will need to connect a DevHub
 
 ### Generator Paths
 * `yo dx` - will show the main menu
@@ -68,7 +68,7 @@ Then call your new workflow generator with:
      _-----_     ╭──────────────────────────╮
     |       |    │       Welcome to DX      │
     |--(o)--|    │    Connected Orgs : 2    │
-   `---------´   │  Active Scratch Orgs : 2 │
+   `---------´   │  Active Scratch Orgs : 1 │
     ( _´U`_ )    │                          │
     /___A___\   /│  Default DevHub : DevHub │
      |  ~  |     │   Default Scratch : DEV  │
