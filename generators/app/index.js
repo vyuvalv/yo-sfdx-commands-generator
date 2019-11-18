@@ -4,6 +4,7 @@ const chalk = require('chalk');
 const yosay = require('yosay');
 const shell = require('shelljs');
 const spinner = require('ora');
+const helper = require('../app/js/common.js');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -11,6 +12,7 @@ module.exports = class extends Generator {
     // input parameter to skip user greeting
     this.argument("devhubName", { type: String, required: false });
     this.argument("orgName", { type: String, required: false });
+    this.argument("skipIntro", { type: Boolean, required: false });
     
     this.defaultDevHub = {alias:this.options.devhubName};
     this.defaultOrg =  {alias:this.options.orgName};
@@ -23,81 +25,19 @@ module.exports = class extends Generator {
 
   initializing() {
 
-      // Start loading spinner
-      this.loading = new spinner(
-        { spinner:'dots',
-          color : 'yellow' }
-      ).start('Pulling DX defaults...');
-
-      // reading all folders inside this root
-      let projectsPath = this.destinationPath();
-      let pathFolders = shell.ls('-L',projectsPath);
-      let paths = [];
-    
-      pathFolders.forEach(function(folder) {
-        let relativePath = folder.substring(projectsPath.length,folder.length );
-          if( folder.indexOf( 'sfdx_logs' ) === -1 ){
-            let pathOption = {
-              name : relativePath,
-              value : folder
-            }
-            paths.push(pathOption);
-          }
-      });
-      const CANCEL_OPTION =  {
-        name : chalk.inverse('Cancel'),
-        value : 'cancel'
-      };
-      paths.push(CANCEL_OPTION);
-      this.contextFolders = paths; 
-
-       // Silently get the available orgs as JSON
-      let orgsOutput = JSON.parse( shell.exec(' sfdx force:org:list --json', { silent: true } ).stdout );
-      // Collect all non Scratch orgs
-      this.nonScratchOrgs = orgsOutput.result.nonScratchOrgs;
-      // Grab Default DevHub
-      if(!this.defaultDevHub.alias){
-        if(this.nonScratchOrgs.length > 0) {
-          this.defaultDevHub = this.nonScratchOrgs.find(org => org.isDevHub);
-          if(!this.defaultDevHub)
-          this.defaultDevHub =  {alias:'NONE'};
-        }
-        else {
-          this.defaultDevHub =  {alias:'NONE'};
-        }
-      }
-      // Collect Scratch Orgs
-      this.scratchOrgs  = orgsOutput.result.scratchOrgs;
-      // Grab Default Scratch Org
-      if(!this.defaultOrg.alias){
-        if(this.scratchOrgs.length > 0) {
-          this.defaultOrg = this.scratchOrgs.find(org => org.isDefaultUsername);
-          if(!this.defaultOrg) {
-            this.defaultOrg =  {alias:'NONE'};
-          }
-        }
-        else {
-          this.defaultOrg =  {alias:'NONE'};
-        }
-      }
-      // Show Yeoman Message and Stop Spinner   
-      if(this.defaultDevHub.alias !== 'NONE') {
-        // Stops Spinner and show success
-        this.loading.succeed('Pulled defaults successfully');
-          // Tell yo to say all details we collected
-        this.log( yosay( chalk.redBright.underline('Welcome to DX \n') + 
-                  `Connected Orgs : ${chalk.cyan(this.nonScratchOrgs.length)} \n` +
-                  `Active Scratch Orgs : ${chalk.cyan(this.scratchOrgs.length)} \n\n` + 
-                  `Default DevHub : ${chalk.cyan( this.defaultDevHub.alias )} \n` +
-                  `Default Scratch : ${chalk.cyan( this.defaultOrg.alias )} `
-        ) ); 
-      }
-      else {
-        // Stops Spinner and show failure
-        this.loading.fail('Failed to pull defaults');
-        // Tell yo to say you need to connect
-        this.log( yosay( chalk.redBright('NEED TO CONNECT DEVHUB') )); 
-      }
+       // reading all folders inside this root
+       this.contextFolders = helper.getPathDirectories(this.destinationPath());
+       // tell yo to say welcome !
+       if(!this.options.skipIntro) {
+         const output = helper.getOrgDefaults();
+ 
+         this.defaultDevHub = output.defaultDevHub;
+         this.defaultOrg = output.defaultOrg;
+         this.nonScratchOrgs = output.nonScratchOrgs;
+         this.scratchOrgs = output.scratchOrgs;
+ 
+         this.log( yosay( output.yosay )); 
+       }
   }
 
   prompting() {
@@ -119,12 +59,12 @@ module.exports = class extends Generator {
           {
             name:  'New Project',
             value: 'create-project' ,
-            checked: false
+            checked: true
           },
           {
             name:  'New Scratch Org',
             value:  'create-org',
-            checked: false
+            checked: true
           },
           {
             name:  'Manage DX',
@@ -200,8 +140,10 @@ module.exports = class extends Generator {
   
     if( this.selectedOptions.includes("create-project")){
         this.composeWith(require.resolve('../project'),{
-            projectName : this.props.projectName
+            projectName : this.props.projectName,
+            skipIntro: true
         });
+       
     }
 
     if( this.selectedOptions.includes("open-project")&& this.props.existingProject != 'cancel'){
@@ -211,7 +153,8 @@ module.exports = class extends Generator {
     if( this.selectedOptions.includes("create-org") ){
       this.composeWith(require.resolve('../org'),{
         devhubName : this.defaultDevHub.alias,
-        projectPath : this.props.projectName
+        projectPath : this.props.projectName,
+        skipIntro: true
       });
     }
 
@@ -227,11 +170,6 @@ module.exports = class extends Generator {
     }
    
     if( this.selectedOptions.includes("exit") ) {
-      // cleanup
-      if ( shell.test('-e', this.destinationPath()+'/sfdx_logs' ) )  { 
-        this.log(chalk.red('-- cleanup ') + this.destinationPath()+'/sfdx_logs');
-        shell.rm('-rf',this.destinationPath()+'/sfdx_logs');
-      }
       // exit
       shell.exit(1);
     }

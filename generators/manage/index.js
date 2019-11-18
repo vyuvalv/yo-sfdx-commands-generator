@@ -3,6 +3,7 @@ const shell = require('shelljs');
 const yosay = require('yosay');
 const chalk = require('chalk');
 const spinner = require('ora');
+const helper = require('../app/js/common.js');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -27,55 +28,15 @@ module.exports = class extends Generator {
         color : 'yellow' }
     );
     if(!this.options.skipIntro) {
-      this.loading.start('Pulling DX defaults...');
-    
-             // Silently get the available orgs as JSON
-             let orgsOutput = JSON.parse( shell.exec(' sfdx force:org:list --json', { silent: true } ).stdout );
-             // Collect all non Scratch orgs
-             this.nonScratchOrgs = orgsOutput.result.nonScratchOrgs;
-             // Grab Default DevHub
-             if(!this.defaultDevHub.alias){
-               if(this.nonScratchOrgs.length > 0) {
-                 this.defaultDevHub = this.nonScratchOrgs.find(org => org.isDevHub);
-                 if(!this.defaultDevHub)
-                 this.defaultDevHub =  {alias:'NONE'};
-               }
-               else {
-                 this.defaultDevHub =  {alias:'NONE'};
-               }
-             }
-             // Collect Scratch Orgs
-             this.scratchOrgs  = orgsOutput.result.scratchOrgs;
-             // Grab Default Scratch Org
-             if(!this.defaultOrg.alias){
-               if(this.scratchOrgs.length > 0) {
-                 this.defaultOrg = this.scratchOrgs.find(org => org.isDefaultUsername);
-                 if(!this.defaultOrg) {
-                   this.defaultOrg =  {alias:'NONE'};
-                 }
-               }
-               else {
-                 this.defaultOrg =  {alias:'NONE'};
-               }
-             }
-             // Show Yeoman and Stop Spinner   
-             if(this.defaultDevHub.alias !== 'NONE') {
-               // Stops Spinner and show success
-               this.loading.succeed('Pulled defaults successfully');
-                   // Tell yo to say all details we collected
-                  this.log( yosay( chalk.redBright.underline('Welcome to DX \n') + 
-                  `Connected Orgs : ${chalk.cyan(this.nonScratchOrgs.length)} \n` +
-                  `Active Scratch Orgs : ${chalk.cyan(this.scratchOrgs.length)} \n\n` + 
-                  `Default DevHub : ${chalk.cyan( this.defaultDevHub.alias )} \n` +
-                  `Default Scratch : ${chalk.cyan( this.defaultOrg.alias )} `  ) ); 
-    
-             }
-             else {
-               // Stops Spinner and show failure
-               this.loading.fail('Failed to pull defaults');
-              // Tell yo to say you need to connect
-              this.log( yosay( chalk.redBright('NEED TO CONNECT DEVHUB') )); 
-             }
+      const output = helper.getOrgDefaults();
+
+      this.defaultDevHub = output.defaultDevHub;
+      this.defaultOrg = output.defaultOrg;
+      this.nonScratchOrgs = output.nonScratchOrgs;
+      this.scratchOrgs = output.scratchOrgs;
+
+      this.log( yosay( output.yosay )); 
+     
     }
 
   }
@@ -83,47 +44,21 @@ module.exports = class extends Generator {
   prompting() {
       // setting a cancel option to go back
     const CANCEL_OPTION =  {
-        key: 'c',
         name : chalk.inverse('Cancel'),
         value : 'cancel'
     };
-    // set a nice seperator for list of options
-    const SEPERATOR =  {
-      type: 'separator', 
-      line: '--------------'
-    };
-    // getting aliases from org list
-    const getOrgOptions = function (orgNames) {
-      const orgAliases = orgNames.map(org => org.alias);
-      let orgOptions = [ SEPERATOR ];
-      if( orgAliases.length > 0 ){
-        let order = 1;
-        orgAliases.forEach(function(orgAlias) {
-          let orgOption = {
-            key : order,
-            name : orgAlias,
-            value : orgAlias
-          }
-          orgOptions.push(orgOption);
-          order +=1;
-        });
-      }
-      return orgOptions;
-    }
+
     // dynamic options from org list for Devhub alias names
-    let devhubOptions = getOrgOptions(this.nonScratchOrgs);
+    let devhubOptions = helper.getOrgOptions(this.nonScratchOrgs);
     // dynamic options from scratch org list for Scratch alias names
-    let scratchOptions = getOrgOptions(this.scratchOrgs);   
-    let allOrgAliases = [...scratchOptions, ...devhubOptions];
+    let scratchOptions = helper.getOrgOptions(this.scratchOrgs);   
+    
+    let allOrgAliases = helper.getOrgOptions([...this.nonScratchOrgs, ...this.scratchOrgs]);
+
 
           devhubOptions.push(CANCEL_OPTION);
-          devhubOptions.push(SEPERATOR);
-
           scratchOptions.push(CANCEL_OPTION);
-          scratchOptions.push(SEPERATOR);
-
           allOrgAliases.push(CANCEL_OPTION);
-          allOrgAliases.push(SEPERATOR);
 
     this.log('--------------------------------');
     const questions = [

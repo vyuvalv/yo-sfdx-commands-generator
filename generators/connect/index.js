@@ -71,12 +71,14 @@ module.exports = class extends Generator {
         sfdxCommand += ' -s '; // --setdefaultusername (boolean)
 
         this.log( "Run 🏄🏻‍ : " + chalk.magenta(sfdxCommand));
-        this.loading.succeed(chalk.green('Opened connection successfully'));
-        shell.exec(sfdxCommand);
-
-        //shell.exit(1);
-        this.composeWith(require.resolve('../app'));
-        
+    
+       if( shell.exec(sfdxCommand).code === 0){
+              this.loading.succeed(chalk.green('Opened connection successfully'));
+              this.composeWith(require.resolve('../app'));
+        }
+        else {
+          this.loading.fail(chalk.green('Failed to connect'));
+        }
       this.log("=========================");
     });
   }

@@ -24,14 +24,24 @@
         "checked": true
     }, 
     {
+        "name": "ExternalSharing",
+        "value": "ExternalSharing",
+        "checked": true
+    }, 
+    {
         "name": "PersonAccounts",
         "value": "PersonAccounts",
-        "checked": true
+        "checked": false
     }, 
     {
         "name": "AuthorApex",
         "value": "AuthorApex",
-        "checked": false
+        "checked": true
+    }, 
+    {
+        "name": "API",
+        "value": "API",
+        "checked": true
     }, 
     {
         "name": "MultiCurrency",
@@ -55,16 +65,20 @@
         "value": "US"
     },
     {
-        "name": "Israel",
-        "value": "IL"
-    },
-    {
         "name": "France",
         "value": "FR"
     },
     {
-        "name": "Australia",
-        "value": "AU"
+        "name": "Italy",
+        "value": "IT"
+    },
+    {
+        "name": "Spain",
+        "value": "ES"
+    },
+    {
+        "name": "Portugal",
+        "value": "BR"
     }
 
   ],
@@ -74,12 +88,20 @@
         "value": "en_US"
     },
     {
-        "name": "Hebrew",
-        "value": "iw"
-    },
-    {
         "name": "French",
         "value": "fr"
+    },
+    {
+        "name": "Italian",
+        "value": "it"
+    },
+    {
+        "name": "Spanish",
+        "value": "es"
+    },
+    {
+        "name": "Portuguese",
+        "value": "pt_BR"
     }
   ]
 }

@@ -4,12 +4,13 @@ const chalk = require('chalk');
 const yosay = require('yosay');
 const shell = require('shelljs');
 const spinner = require('ora');
-
+const helper = require('../app/js/common.js');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     this.argument("projectName", { type: String, required: false });
+    this.argument("skipIntro", { type: Boolean, required: false });
   }
   initializing() {
     this.loading = new spinner(
@@ -46,15 +47,9 @@ prompting() {
       },
       {
         type    : 'confirm',
-        name    : 'includeManifest', 
-        message : 'Include Manifest file',
-        default : false
-      },
-      {
-        type    : 'confirm',
         name    : 'includeReadMe', 
         message : 'Include ReadMe file',
-        default : false
+        default : true
       },
       {
         type: "editor",
@@ -95,7 +90,7 @@ writing() {
           sfdxCommand += ' -s ' + this.props.appNamespace;  //  --namespace NAMESPACE Type: string
 
           sfdxCommand += ' -t ' + 'standard';   // --template 
-          if(this.props.includeManifest)
+        //  if(this.props.includeManifest)
           sfdxCommand += ' -x '; //--manifest Type: boolean
 
           this.log(" Run 🏄🏻‍ : "+ chalk.magenta(sfdxCommand) );
@@ -127,7 +122,7 @@ writing() {
                   );
                     // writing .gitignore file
                   this.fs.copy(
-                    this.templatePath('settings/.gitignore'),
+                    this.templatePath('settings/gitignore'),
                     this.destinationPath(this.props.projectName + '/.gitignore')
                   );
 
@@ -141,11 +136,12 @@ writing() {
 }
 
 install() {
-  this.log( chalk.greenBright("Your project is ready! - Launch VS Code") );
-  shell.exec(' code '+this.props.projectName);
-
-  // say completed 
-  shell.exec(' say \' Your project was created! \'');
+  if(shell.test('-d',this.props.projectName)) {
+    this.log( chalk.greenBright("Your project is ready! - Launch VS Code") );
+    helper.openCode(this.props.projectName);
+    // say completed 
+    helper.sayText('Your project was created!');
+  }
 }
 
 end() {
