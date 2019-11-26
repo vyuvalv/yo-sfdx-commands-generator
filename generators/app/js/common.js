@@ -22,6 +22,7 @@ const SEPERATOR =  {
 
 module.exports = {
     getOrgDefaults: function() {
+        // Defaults
         let output = {
             nonScratchOrgs:[],
             scratchOrgs:[],
@@ -32,6 +33,7 @@ module.exports = {
                 alias:'NONE'
             }
         };
+        // Spinner starts
         this.loading = new spinner(
             { spinner:'monkey',
               color : 'yellow' }
@@ -45,7 +47,7 @@ module.exports = {
                     output.nonScratchOrgs = orgsOutput.result.nonScratchOrgs;
                     // Grab Default DevHub
                     if(output.nonScratchOrgs.length > 0) {              
-                            output.defaultDevHub = output.nonScratchOrgs.find(org => org.isDevHub);
+                            output.defaultDevHub = output.nonScratchOrgs.find(org => org.isDefaultDevHubUsername);
                             if(!output.defaultDevHub) 
                                 output.defaultDevHub =  {alias:'NONE'};
                     }

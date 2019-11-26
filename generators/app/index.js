@@ -30,7 +30,7 @@ module.exports = class extends Generator {
        // tell yo to say welcome !
        if(!this.options.skipIntro) {
          const output = helper.getOrgDefaults();
- 
+        // using this[name] to pass variables across all methods.
          this.defaultDevHub = output.defaultDevHub;
          this.defaultOrg = output.defaultOrg;
          this.nonScratchOrgs = output.nonScratchOrgs;
@@ -137,7 +137,6 @@ module.exports = class extends Generator {
   configuring() {
 
     // composing sub-generators for each option
-  
     if( this.selectedOptions.includes("create-project")){
         this.composeWith(require.resolve('../project'),{
             projectName : this.props.projectName,
