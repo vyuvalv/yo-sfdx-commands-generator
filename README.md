@@ -29,9 +29,11 @@ Few simple steps, install [Yeoman](http://yeoman.io) (we assume you have pre-ins
 
 3. Clone this repository
 
-4. Rename the git folder to `generator-dx` and step inside it
+4. Rename the git folder to `generator-dx` and step inside it / or make sure you change the name attribute in `package.json`
 ```npm
-  cd generator-dx
+  mv source target // will rename the folder
+  cd generator-dx // step inside
+  code . // open vs code in current folder ( make sure you installed code in PATH to use this)
 ```
 5. Link required npm modules  
 ```npm
