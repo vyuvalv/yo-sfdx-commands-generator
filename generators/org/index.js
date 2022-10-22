@@ -85,7 +85,7 @@ module.exports = class extends Generator {
           type: "input",
           name: "adminEmail",
           message: "Admin Email",
-          default: 'yuval.vardi@ncino.com',
+          default: 'myemail@admin.com',
           validate: function(value) {
             return value ? true : 'Please enter email';
           }
